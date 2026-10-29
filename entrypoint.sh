@@ -9,6 +9,13 @@ trap cleanup EXIT
 
 echo "Starting ApexKube Agent..."
 
+# The pod network namespace survives container restarts, so a killed container
+# leaves wg0 behind and wg-quick then refuses to start.
+if ip link show wg0 >/dev/null 2>&1; then
+    echo "Removing stale wg0 left by a previous run..."
+    wg-quick down wg0 >/dev/null 2>&1 || ip link delete wg0 >/dev/null 2>&1 || true
+fi
+
 wg-quick up wg0
 
 for i in $(seq 1 15); do
