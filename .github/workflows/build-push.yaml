@@ -4,18 +4,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'Dockerfile'
-      - 'entrypoint.sh'
-      - '.github/workflows/build-push.yaml'
     tags:
       - 'v*'
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
-    paths:
-      - 'Dockerfile'
-      - 'entrypoint.sh'
-      - '.github/workflows/build-push.yaml'
 
 permissions:
   contents: read
