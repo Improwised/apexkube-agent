@@ -37,7 +37,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=${{ github.ref_name }}-{{sha}},enable=${{ github.event_name == 'push' && github.ref_type == 'branch' }}
+            type=raw,value=${{ github.head_ref || github.ref_name }}-{{sha}}-{{date 'X'}},enable=${{ github.event_name == 'push' && github.ref_type == 'branch' }}
             type=sha
         timeout-minutes: 1
 
