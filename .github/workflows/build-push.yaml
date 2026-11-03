@@ -63,3 +63,37 @@ jobs:
           provenance: true
           sbom: true
         timeout-minutes: 15
+
+  vuln-scan:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        timeout-minutes: 2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        timeout-minutes: 5
+
+      - name: Build image (no push)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          tags: improwised/apexkube-agent:scan
+          platforms: linux/amd64
+          cache-from: type=gha
+        timeout-minutes: 15
+
+      - name: Scan for CRITICAL/HIGH vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: improwised/apexkube-agent:scan
+          version: v0.76.1
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+        timeout-minutes: 10
